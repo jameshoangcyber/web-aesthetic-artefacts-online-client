@@ -12,15 +12,22 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, title, artist, price, image, category }: ProductCardProps) => {
+  const safeImage = image || '/placeholder.svg';
+  const safePrice = price || '0 VND';
+  
   return (
-    <Card className="group overflow-hidden border-0 shadow-elegant hover:shadow-hover transition-slow bg-card">
+    <Card className="group overflow-hidden border-0 shadow-elegant hover:shadow-hover transition-slow bg-card rounded-2xl">
       <Link to={`/product/${id}`} className="block">
         <div className="aspect-square overflow-hidden bg-muted">
           <img
-            src={image}
+            src={safeImage}
             alt={title}
             className="w-full h-full object-cover transition-slow group-hover:scale-105"
             loading="lazy"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/placeholder.svg';
+            }}
           />
         </div>
       </Link>
@@ -35,9 +42,11 @@ const ProductCard = ({ id, title, artist, price, image, category }: ProductCardP
           <p className="text-sm text-muted-foreground">{artist}</p>
         </div>
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xl font-serif font-semibold text-accent">{price}</p>
-          <Button variant="elegant" size="sm">
-            Xem chi tiết
+          <p className="text-xl font-serif font-semibold text-accent">{safePrice}</p>
+          <Button variant="elegant" size="sm" asChild>
+            <Link to={`/product/${id}`}>
+              Xem chi tiết
+            </Link>
           </Button>
         </div>
       </div>

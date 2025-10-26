@@ -7,7 +7,18 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-serif font-bold">ArtGallery</h3>
+            <Link to="/" className="inline-block">
+              <img 
+                src="/logo-dark.png" 
+                alt="ArtGallery Studio" 
+                className="h-24 w-auto dark:hidden"
+              />
+              <img 
+                src="/logo-light.png" 
+                alt="ArtGallery Studio" 
+                className="h-24 w-auto hidden dark:block"
+              />
+            </Link>
             <p className="text-muted-foreground">
               Nơi gặp gỡ giữa nghệ thuật và cuộc sống
             </p>
@@ -79,7 +90,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
-          <p>&copy; 2024 ArtGallery. Bảo lưu mọi quyền.</p>
+          <p>&copy; 2025 ArtGallery Studio. Bảo lưu mọi quyền.</p>
         </div>
       </div>
     </footer>

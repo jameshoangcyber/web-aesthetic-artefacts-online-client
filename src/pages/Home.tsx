@@ -1,11 +1,33 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+import { productService } from "@/services/product.service";
+import type { Product } from "@/types";
 import heroImage from "@/assets/hero-art-gallery.jpg";
+import { toast } from "sonner";
 
 const Home = () => {
-  const featuredProducts = products.slice(0, 3);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadFeaturedProducts();
+  }, []);
+
+  const loadFeaturedProducts = async () => {
+    try {
+      setIsLoading(true);
+      const products = await productService.getFeaturedProducts(3);
+      setFeaturedProducts(products);
+    } catch (error) {
+      console.error("Failed to load featured products:", error);
+      toast.error("Không thể tải sản phẩm nổi bật");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -50,9 +72,27 @@ const Home = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
+          {isLoading ? (
+            [...Array(3)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-square rounded-lg" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))
+          ) : (
+            featuredProducts.map((product) => (
+              <ProductCard 
+                key={product._id} 
+                id={product._id}
+                title={product.title}
+                artist={product.artistName}
+                price={product.price}
+                image={product.images[0]}
+                category={product.category}
+              />
+            ))
+          )}
         </div>
 
         <div className="text-center">
@@ -84,7 +124,7 @@ const Home = () => {
               <Link
                 key={category.name}
                 to="/products"
-                className="group p-8 bg-card rounded-sm shadow-elegant hover:shadow-hover transition-smooth text-center"
+                className="group p-8 bg-card rounded-2xl shadow-elegant hover:shadow-hover transition-smooth text-center"
               >
                 <h3 className="text-2xl font-serif font-semibold mb-2 group-hover:text-accent transition-smooth">
                   {category.name}
